@@ -1,0 +1,1054 @@
+<title>JC's Auto Repair Performance Report</title>
+<style>
+  :root{
+    --bg:#F5F6F7;
+    --surface:#FFFFFF;
+    --surface-alt:#EEF1F2;
+    --ink:#14181D;
+    --ink-muted:#5B6670;
+    --ink-faint:#8A949B;
+    --border:#DFE3E6;
+    --border-strong:#C7CDD1;
+    --accent-gbp:#0089A0;
+    --accent-gbp-soft:#E3F1F3;
+    --accent-web:#B8752A;
+    --accent-web-soft:#F6ECDC;
+    --total-line:#14181D;
+    --good:#2E7D4F;
+    --good-soft:#E5F1E9;
+    --bad:#B23A32;
+    --bad-soft:#F6E7E5;
+    --flat:#5B6670;
+    --flat-soft:#EEF1F2;
+    --warn-bg:#FBF2E3;
+    --warn-border:#D9A354;
+    --warn-ink:#7A5416;
+    --shadow: 0 1px 2px rgba(20,24,29,0.04), 0 6px 18px rgba(20,24,29,0.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10151A;
+      --surface:#171E24;
+      --surface-alt:#1D262D;
+      --ink:#E7ECEF;
+      --ink-muted:#96A3AB;
+      --ink-faint:#6D7981;
+      --border:#2A343B;
+      --border-strong:#38434B;
+      --accent-gbp:#0D93A6;
+      --accent-gbp-soft:#132C31;
+      --accent-web:#C68239;
+      --accent-web-soft:#2B2113;
+      --total-line:#E7ECEF;
+      --good:#4CAF6D;
+      --good-soft:#16281D;
+      --bad:#E0685C;
+      --bad-soft:#2E1A18;
+      --flat:#96A3AB;
+      --flat-soft:#1D262D;
+      --warn-bg:#241C10;
+      --warn-border:#8A6328;
+      --warn-ink:#E8B972;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10151A;
+    --surface:#171E24;
+    --surface-alt:#1D262D;
+    --ink:#E7ECEF;
+    --ink-muted:#96A3AB;
+    --ink-faint:#6D7981;
+    --border:#2A343B;
+    --border-strong:#38434B;
+    --accent-gbp:#0D93A6;
+    --accent-gbp-soft:#132C31;
+    --accent-web:#C68239;
+    --accent-web-soft:#2B2113;
+    --total-line:#E7ECEF;
+    --good:#4CAF6D;
+    --good-soft:#16281D;
+    --bad:#E0685C;
+    --bad-soft:#2E1A18;
+    --flat:#96A3AB;
+    --flat-soft:#1D262D;
+    --warn-bg:#241C10;
+    --warn-border:#8A6328;
+    --warn-ink:#E8B972;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important; scroll-behavior:auto !important;}
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Source Sans 3','Segoe UI',system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Barlow Semi Condensed','Arial Narrow',sans-serif;
+    font-weight:700;
+    color:var(--ink);
+    text-wrap:balance;
+    margin:0;
+  }
+  .mono{
+    font-family:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  p{margin:0;}
+  a{color:var(--accent-gbp);}
+  ::selection{background:var(--accent-gbp-soft);}
+
+  .wrap{max-width:1120px; margin:0 auto; padding:0 20px;}
+
+  /* ---------- Letterhead ---------- */
+  .letterhead{
+    border-bottom:1px solid var(--border);
+    background:var(--surface);
+  }
+  .letterhead-top{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 0; flex-wrap:wrap; gap:8px;
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:600; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--ink-muted);
+  }
+  .letterhead-top .brand{color:var(--ink); font-weight:700;}
+  .letterhead-main{
+    padding:20px 0 28px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap;
+  }
+  .letterhead-main h1{font-size:clamp(28px,4vw,40px); line-height:1.05;}
+  .letterhead-sub{
+    margin-top:8px; color:var(--ink-muted); font-size:15px;
+  }
+  .letterhead-meta{
+    display:flex; flex-direction:column; gap:6px; align-items:flex-end;
+    font-size:13.5px; color:var(--ink-muted); text-align:right;
+    min-width:220px;
+  }
+  .letterhead-meta strong{color:var(--ink); font-weight:600;}
+
+  /* ---------- Nav ---------- */
+  nav.report-nav{
+    position:sticky; top:0; z-index:20;
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow);
+  }
+  nav.report-nav .navrow{
+    display:flex; gap:2px; overflow-x:auto; padding:0; scrollbar-width:thin;
+  }
+  nav.report-nav a{
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:6px;
+    padding:11px 14px;
+    font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:600; font-size:13.5px; letter-spacing:0.02em;
+    color:var(--ink-muted); text-decoration:none;
+    border-bottom:2px solid transparent;
+    white-space:nowrap;
+  }
+  nav.report-nav a .n{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint);
+  }
+  nav.report-nav a:hover{color:var(--ink); background:var(--surface-alt);}
+  nav.report-nav a:focus-visible{outline:2px solid var(--accent-gbp); outline-offset:-2px;}
+
+  /* ---------- Sections ---------- */
+  main{padding-bottom:80px;}
+  section.rsec{padding:44px 0; border-bottom:1px solid var(--border);}
+  section.rsec:last-of-type{border-bottom:none;}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin-bottom:20px;}
+  .sec-num{
+    font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--ink-faint);
+    border:1px solid var(--border-strong); border-radius:5px; padding:2px 7px;
+  }
+  .sec-head h2{font-size:24px; letter-spacing:0.01em;}
+  .sec-intro{color:var(--ink-muted); max-width:70ch; margin-bottom:20px; font-size:15.5px;}
+
+  /* ---------- Exec summary ---------- */
+  .exec-lede{font-size:17.5px; max-width:74ch; margin-bottom:22px;}
+  .exec-lede strong{color:var(--ink);}
+  .statline{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:1px; background:var(--border);
+    border:1px solid var(--border); border-radius:12px; overflow:hidden;
+  }
+  .statline .s{
+    background:var(--surface); padding:16px 16px 14px;
+  }
+  .statline .s .lbl{font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-muted); font-weight:600;}
+  .statline .s .val{font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; margin-top:6px; font-variant-numeric:tabular-nums;}
+  .statline .s .sub{font-size:12.5px; color:var(--ink-faint); margin-top:3px;}
+  .rail-gbp{box-shadow:inset 3px 0 0 var(--accent-gbp);}
+  .rail-web{box-shadow:inset 3px 0 0 var(--accent-web);}
+  .rail-total{box-shadow:inset 3px 0 0 var(--total-line);}
+
+  .callout{
+    margin-top:20px; padding:14px 16px; border-radius:10px;
+    background:var(--accent-gbp-soft); border:1px solid var(--accent-gbp);
+    font-size:14.5px; color:var(--ink);
+  }
+  .callout strong{color:var(--ink);}
+
+  /* ---------- KPI cards ---------- */
+  .kpi-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:14px;
+  }
+  .kpi{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 16px 14px; box-shadow:var(--shadow);
+  }
+  .kpi .kpi-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .kpi .kpi-label{font-family:'Barlow Semi Condensed',sans-serif; font-weight:600; font-size:15px; letter-spacing:0.01em;}
+  .kpi svg.spark{display:block; margin-top:8px;}
+  .kpi .kpi-months{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:12px;
+  }
+  .kpi .kpi-months div{text-align:center;}
+  .kpi .kpi-months .m{font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint);}
+  .kpi .kpi-months .v{font-family:'IBM Plex Mono',monospace; font-size:16px; font-weight:600; margin-top:2px;}
+  .kpi .kpi-foot{
+    margin-top:12px; padding-top:10px; border-top:1px dashed var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .kpi .kpi-foot .cap{font-size:11.5px; color:var(--ink-faint);}
+
+  /* ---------- chips ---------- */
+  .chip{
+    display:inline-flex; align-items:center; gap:4px;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; font-weight:600;
+    padding:3px 8px; border-radius:999px; white-space:nowrap;
+  }
+  .chip-up{background:var(--good-soft); color:var(--good);}
+  .chip-down{background:var(--bad-soft); color:var(--bad);}
+  .chip-flat{background:var(--flat-soft); color:var(--flat);}
+  .chip-na{background:var(--flat-soft); color:var(--ink-faint);}
+
+  /* ---------- tables ---------- */
+  .table-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow);}
+  table{width:100%; border-collapse:collapse; background:var(--surface); font-size:14.5px; min-width:640px;}
+  table.sources{min-width:760px;}
+  thead th{
+    text-align:left; font-family:'Barlow Semi Condensed',sans-serif; font-weight:600;
+    font-size:12.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-muted);
+    background:var(--surface-alt); padding:10px 14px; border-bottom:1px solid var(--border);
+    position:sticky; top:0;
+  }
+  tbody td{padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:nth-child(even){background:color-mix(in srgb, var(--surface-alt) 45%, transparent);}
+  td.num, th.num{text-align:right; font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums;}
+  td.metric{font-weight:600;}
+  td.src{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--ink-muted);}
+
+  /* ---------- charts ---------- */
+  .chart-panel{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:18px 18px 14px; box-shadow:var(--shadow);
+  }
+  .chart-panel h4{font-size:15.5px; font-weight:600; margin-bottom:2px;}
+  .chart-panel .chart-cap{font-size:12.5px; color:var(--ink-faint); margin-top:8px;}
+  .chart-panel .chart-cap.warn{color:var(--warn-ink);}
+  .chart-grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:760px){.chart-grid-2{grid-template-columns:1fr;}}
+  .legend{display:flex; gap:16px; flex-wrap:wrap; margin-top:10px; font-size:13px; color:var(--ink-muted);}
+  .legend .li{display:flex; align-items:center; gap:6px;}
+  .legend .sw{width:14px; height:8px; border-radius:2px; display:inline-block;}
+  .legend .sw.line{height:3px; border-radius:2px;}
+  svg text{font-family:'IBM Plex Mono',monospace;}
+  svg .axis-label{font-family:'Barlow Semi Condensed',sans-serif; font-weight:600;}
+
+  .two-col{display:grid; grid-template-columns:1.1fr 1fr; gap:20px;}
+  @media (max-width:860px){.two-col{grid-template-columns:1fr;}}
+
+  /* ---------- wins / improve lists ---------- */
+  .item-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px;}
+  .item-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px; box-shadow:var(--shadow);
+  }
+  .item-card.win{box-shadow:inset 3px 0 0 var(--good), var(--shadow);}
+  .item-card.improve{box-shadow:inset 3px 0 0 var(--bad), var(--shadow);}
+  .item-card .item-head{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .item-card .item-title{font-family:'Barlow Semi Condensed',sans-serif; font-weight:600; font-size:15.5px;}
+  .item-card .item-move{font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:600; margin-top:8px;}
+  .item-card .item-detail{font-size:13.5px; color:var(--ink-muted); margin-top:6px;}
+  .item-card .item-caveat{font-size:12px; color:var(--warn-ink); margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);}
+
+  /* ---------- trends ---------- */
+  .trend-block{margin-bottom:18px;}
+  .trend-block:last-child{margin-bottom:0;}
+  .trend-block h4{font-size:15.5px; font-weight:600; margin-bottom:6px;}
+  .trend-fact{font-size:14.5px; margin-bottom:6px;}
+  .trend-fact .tag{
+    font-family:'Barlow Semi Condensed',sans-serif; font-weight:700; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:0.06em; color:var(--accent-gbp);
+    border:1px solid var(--accent-gbp); border-radius:4px; padding:1px 6px; margin-right:8px;
+  }
+  .trend-read{
+    font-size:14px; color:var(--ink-muted); font-style:italic; padding-left:2px;
+    border-left:2px solid var(--border); padding-left:12px; margin-left:2px;
+  }
+  .trend-read .tag2{
+    font-family:'Barlow Semi Condensed',sans-serif; font-weight:700; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-faint); font-style:normal;
+    margin-right:8px;
+  }
+
+  /* ---------- data quality box ---------- */
+  .dq-box{
+    background:var(--warn-bg); border:1px solid var(--warn-border); border-radius:12px;
+    padding:18px 20px;
+  }
+  .dq-box .dq-title{
+    display:flex; align-items:center; gap:8px; font-family:'Barlow Semi Condensed',sans-serif;
+    font-weight:700; font-size:16px; color:var(--warn-ink); margin-bottom:4px;
+  }
+  .dq-box .dq-lead{font-size:14px; color:var(--ink); margin-bottom:14px; max-width:72ch;}
+  .dq-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .dq-list li{
+    display:flex; gap:10px; font-size:14.5px; color:var(--ink); align-items:flex-start;
+  }
+  .dq-list .idx{
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:12.5px; color:var(--warn-ink);
+    background:var(--surface); border:1px solid var(--warn-border); border-radius:5px;
+    padding:1px 6px; flex:0 0 auto; margin-top:2px;
+  }
+
+  /* ---------- actions ---------- */
+  .action-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .action-list li{
+    display:flex; gap:14px; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:13px 16px; align-items:flex-start; box-shadow:var(--shadow);
+  }
+  .action-list .anum{
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; color:var(--accent-gbp);
+    flex:0 0 auto; width:22px;
+  }
+  .action-list .atext strong{color:var(--ink);}
+  .action-list .atext{font-size:14.5px; color:var(--ink-muted);}
+  .action-note{font-size:13px; color:var(--ink-faint); margin-top:12px; font-style:italic;}
+
+  /* ---------- footer ---------- */
+  footer{padding:28px 0 50px; color:var(--ink-faint); font-size:12.5px;}
+  footer .fline{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; border-top:1px solid var(--border); padding-top:16px;}
+
+  h3.section-sub{font-size:17px; margin:26px 0 12px;}
+  h3.section-sub:first-child{margin-top:0;}
+
+  @media print{
+    nav.report-nav{position:static; box-shadow:none;}
+    .kpi, .item-card, .chart-panel, .action-list li, .table-scroll{box-shadow:none;}
+    section.rsec{break-inside:avoid; padding:22px 0;}
+    body{background:#fff;}
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
+
+<div class="letterhead">
+  <div class="wrap">
+    <div class="letterhead-top">
+      <span class="brand">LocalVisi Digital</span>
+      <span>Local SEO &amp; Google Maps Visibility</span>
+    </div>
+    <div class="letterhead-main">
+      <div>
+        <h1>JC's Auto Repair Shop</h1>
+        <p class="letterhead-sub">Local SEO Monthly Performance Report &middot; autorepairshoplosangeles.com</p>
+      </div>
+      <div class="letterhead-meta">
+        <div><strong>Reporting Period</strong><br>May 2026 &ndash; July 2026</div>
+        <div>Prepared by LocalVisi Digital &middot; September 2026</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="report-nav" aria-label="Report sections">
+  <div class="wrap navrow">
+    <a href="#summary"><span class="n">01</span>Executive Summary</a>
+    <a href="#overview"><span class="n">02</span>3-Month Overview</a>
+    <a href="#leads"><span class="n">03</span>Lead Generation</a>
+    <a href="#gbp"><span class="n">04</span>Google Business Profile</a>
+    <a href="#website"><span class="n">05</span>Website &amp; Search</a>
+    <a href="#wins"><span class="n">06</span>Key Wins</a>
+    <a href="#improve"><span class="n">07</span>Areas to Improve</a>
+    <a href="#trends"><span class="n">08</span>Trends</a>
+    <a href="#dataquality"><span class="n">09</span>Data Quality</a>
+    <a href="#actions"><span class="n">10</span>Recommended Actions</a>
+    <a href="#sources"><span class="n">11</span>Data Sources</a>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+
+    <!-- 01 EXECUTIVE SUMMARY -->
+    <section class="rsec" id="summary">
+      <div class="sec-head"><span class="sec-num">01</span><h2>Executive Summary</h2></div>
+      <p class="exec-lede">
+        Between May and July 2026, JC's Auto Repair Shop generated <strong>253, then 244, then 235 total leads</strong>
+        per month, a gradual decline of <strong>7.1% over the full quarter</strong>. Leads coming from the Google
+        Business Profile listing stayed comparatively steady, while leads coming from the website fell at a faster
+        rate. The available data shows that GBP-generated lead volume has been relatively more stable than
+        website-generated leads during this reporting period.
+      </p>
+      <div class="statline">
+        <div class="s rail-total"><div class="lbl">Total Leads</div><div class="val">253 &rarr; 235</div><div class="sub">May to July, -7.1%</div></div>
+        <div class="s rail-gbp"><div class="lbl">GBP-Generated Leads</div><div class="val">203 &rarr; 198</div><div class="sub">May to July, -2.5%</div></div>
+        <div class="s rail-web"><div class="lbl">Website-Generated Leads</div><div class="val">50 &rarr; 37</div><div class="sub">May to July, -26.0%</div></div>
+        <div class="s rail-gbp"><div class="lbl">GBP Calls</div><div class="val">193 &rarr; 191</div><div class="sub">May to July, -1.0%</div></div>
+        <div class="s rail-web"><div class="lbl">Website Form Submissions</div><div class="val">26 &rarr; 28</div><div class="sub">May to July, +7.7%</div></div>
+        <div class="s rail-web"><div class="lbl">Website Click-to-Call</div><div class="val">24 &rarr; 9</div><div class="sub">May to July, -62.5%</div></div>
+      </div>
+      <div class="callout">
+        <strong>In plain terms:</strong> the shop is still getting a steady flow of leads through its Google Business
+        Profile, but fewer people are contacting the business through the website, particularly by clicking to call
+        from a mobile device. This report does not include revenue, booking, or ROI figures, as that data was not
+        provided in the source reports.
+      </div>
+    </section>
+
+    <!-- 02 OVERVIEW -->
+    <section class="rsec" id="overview">
+      <div class="sec-head"><span class="sec-num">02</span><h2>3-Month Performance Overview</h2></div>
+      <p class="sec-intro">Every core lead-generation metric, side by side across the three reporting months. Full change math is in Section 3.</p>
+      <div class="kpi-grid">
+
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">Total Leads</span><span class="chip chip-down">&darr; -7.1%</span></div>
+          <svg class="spark" data-spark="253,244,235" data-color="total" width="100%" height="46" viewBox="0 0 220 46" preserveAspectRatio="none"></svg>
+          <div class="kpi-months"><div><div class="m">May</div><div class="v">253</div></div><div><div class="m">Jun</div><div class="v">244</div></div><div><div class="m">Jul</div><div class="v">235</div></div></div>
+          <div class="kpi-foot"><span class="cap">May &rarr; July change</span></div>
+        </div>
+
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">GBP Leads</span><span class="chip chip-down">&darr; -2.5%</span></div>
+          <svg class="spark" data-spark="203,201,198" data-color="gbp" width="100%" height="46" viewBox="0 0 220 46" preserveAspectRatio="none"></svg>
+          <div class="kpi-months"><div><div class="m">May</div><div class="v">203</div></div><div><div class="m">Jun</div><div class="v">201</div></div><div><div class="m">Jul</div><div class="v">198</div></div></div>
+          <div class="kpi-foot"><span class="cap">May &rarr; July change</span></div>
+        </div>
+
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">Website Leads</span><span class="chip chip-down">&darr; -26.0%</span></div>
+          <svg class="spark" data-spark="50,43,37" data-color="web" width="100%" height="46" viewBox="0 0 220 46" preserveAspectRatio="none"></svg>
+          <div class="kpi-months"><div><div class="m">May</div><div class="v">50</div></div><div><div class="m">Jun</div><div class="v">43</div></div><div><div class="m">Jul</div><div class="v">37</div></div></div>
+          <div class="kpi-foot"><span class="cap">May &rarr; July change</span></div>
+        </div>
+
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">GBP Calls</span><span class="chip chip-down">&darr; -1.0%</span></div>
+          <svg class="spark" data-spark="193,194,191" data-color="gbp" width="100%" height="46" viewBox="0 0 220 46" preserveAspectRatio="none"></svg>
+          <div class="kpi-months"><div><div class="m">May</div><div class="v">193</div></div><div><div class="m">Jun</div><div class="v">194</div></div><div><div class="m">Jul</div><div class="v">191</div></div></div>
+          <div class="kpi-foot"><span class="cap">Essentially flat over the quarter</span></div>
+        </div>
+
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">GBP Chat / Text Inquiries</span><span class="chip chip-down">&darr; -30.0%</span></div>
+          <svg class="spark" data-spark="10,7,7" data-color="gbp" width="100%" height="46" viewBox="0 0 220 46" preserveAspectRatio="none"></svg>
+          <div class="kpi-months"><div><div class="m">May</div><div class="v">10</div></div><div><div class="m">Jun</div><div class="v">7</div></div><div><div class="m">Jul</div><div class="v">7</div></div></div>
+          <div class="kpi-foot"><span class="cap">Drop was in May &rarr; June only</span></div>
+        </div>
+
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">Website Form Submissions</span><span class="chip chip-up">&uarr; +7.7%</span></div>
+          <svg class="spark" data-spark="26,29,28" data-color="web" width="100%" height="46" viewBox="0 0 220 46" preserveAspectRatio="none"></svg>
+          <div class="kpi-months"><div><div class="m">May</div><div class="v">26</div></div><div><div class="m">Jun</div><div class="v">29</div></div><div><div class="m">Jul</div><div class="v">28</div></div></div>
+          <div class="kpi-foot"><span class="cap">May &rarr; July change</span></div>
+        </div>
+
+        <div class="kpi"><div class="kpi-top"><span class="kpi-label">Website Click-to-Call</span><span class="chip chip-down">&darr; -62.5%</span></div>
+          <svg class="spark" data-spark="24,14,9" data-color="web" width="100%" height="46" viewBox="0 0 220 46" preserveAspectRatio="none"></svg>
+          <div class="kpi-months"><div><div class="m">May</div><div class="v">24</div></div><div><div class="m">Jun</div><div class="v">14</div></div><div><div class="m">Jul</div><div class="v">9</div></div></div>
+          <div class="kpi-foot"><span class="cap">Declined every month</span></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 03 LEAD GENERATION -->
+    <section class="rsec" id="leads">
+      <div class="sec-head"><span class="sec-num">03</span><h2>Lead Generation Performance</h2></div>
+      <p class="sec-intro">All figures below are directly reported monthly totals. Percentage change = ((New &minus; Old) / Old) &times; 100, rounded to one decimal.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr>
+            <th>Metric</th><th class="num">May</th><th class="num">June</th><th class="num">July</th>
+            <th class="num">May&rarr;June</th><th class="num">June&rarr;July</th><th class="num">May&rarr;July</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="metric">Total Leads</td><td class="num">253</td><td class="num">244</td><td class="num">235</td>
+              <td class="num"><span class="chip chip-down">&darr; -9 (-3.6%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -9 (-3.7%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -18 (-7.1%)</span></td></tr>
+            <tr><td class="metric">Leads from GBP Listing</td><td class="num">203</td><td class="num">201</td><td class="num">198</td>
+              <td class="num"><span class="chip chip-down">&darr; -2 (-1.0%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -3 (-1.5%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -5 (-2.5%)</span></td></tr>
+            <tr><td class="metric">Leads from Website</td><td class="num">50</td><td class="num">43</td><td class="num">37</td>
+              <td class="num"><span class="chip chip-down">&darr; -7 (-14.0%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -6 (-14.0%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -13 (-26.0%)</span></td></tr>
+            <tr><td class="metric">GBP Calls</td><td class="num">193</td><td class="num">194</td><td class="num">191</td>
+              <td class="num"><span class="chip chip-up">&uarr; +1 (+0.5%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -3 (-1.5%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -2 (-1.0%)</span></td></tr>
+            <tr><td class="metric">GBP Chat / Text Inquiries</td><td class="num">10</td><td class="num">7</td><td class="num">7</td>
+              <td class="num"><span class="chip chip-down">&darr; -3 (-30.0%)</span></td>
+              <td class="num"><span class="chip chip-flat">&mdash; 0 (0.0%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -3 (-30.0%)</span></td></tr>
+            <tr><td class="metric">Website Form Submissions</td><td class="num">26</td><td class="num">29</td><td class="num">28</td>
+              <td class="num"><span class="chip chip-up">&uarr; +3 (+11.5%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -1 (-3.4%)</span></td>
+              <td class="num"><span class="chip chip-up">&uarr; +2 (+7.7%)</span></td></tr>
+            <tr><td class="metric">Website Click-to-Call</td><td class="num">24</td><td class="num">14</td><td class="num">9</td>
+              <td class="num"><span class="chip chip-down">&darr; -10 (-41.7%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -5 (-35.7%)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -15 (-62.5%)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="chart-grid-2" style="margin-top:18px;">
+        <div class="chart-panel">
+          <h4>Total Leads Trend</h4>
+          <svg id="chartTotalLeads" width="100%" height="220" viewBox="0 0 520 220" role="img" aria-label="Total leads: 253 in May, 244 in June, 235 in July"></svg>
+          <p class="chart-cap">Directly reported monthly totals. All three months use the same reporting method.</p>
+        </div>
+        <div class="chart-panel">
+          <h4>GBP vs. Website Leads (Indexed)</h4>
+          <svg id="chartIndexed" width="100%" height="190" viewBox="0 0 520 190" role="img" aria-label="GBP leads and website leads, indexed to May 2026 equals 100"></svg>
+          <div class="legend">
+            <span class="li"><span class="sw line" style="background:var(--accent-gbp)"></span>GBP Leads</span>
+            <span class="li"><span class="sw line" style="background:var(--accent-web)"></span>Website Leads</span>
+          </div>
+          <p class="chart-cap">Indexed to May 2026 = 100, to compare trend shape despite different lead volumes. Actual counts are in the table above.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 GBP -->
+    <section class="rsec" id="gbp">
+      <div class="sec-head"><span class="sec-num">04</span><h2>Google Business Profile Performance</h2></div>
+      <div class="callout" style="background:var(--accent-gbp-soft); border-color:var(--accent-gbp);">
+        <strong>Two related but different numbers:</strong> "Leads from GBP Listing" is the total lead figure the
+        client's report attributes to the Google Business Profile (calls plus chat/text messages). "GBP Calls" is
+        specifically the phone calls placed from the profile. They are not the same metric, and one is a component
+        of the other.
+      </div>
+
+      <div class="two-col" style="margin-top:20px;">
+        <div class="chart-panel">
+          <h4>GBP Calls by Month</h4>
+          <svg id="chartGbpCalls" width="100%" height="230" viewBox="0 0 480 230" role="img" aria-label="GBP calls: 193 in May, 194 in June, 191 in July"></svg>
+          <p class="chart-cap">Calls made directly from the Google Business Profile. Reported for the full calendar month in all three periods.</p>
+        </div>
+        <div class="table-scroll" style="align-self:start;">
+          <table>
+            <thead><tr><th>Metric</th><th class="num">May</th><th class="num">June</th><th class="num">July</th></tr></thead>
+            <tbody>
+              <tr><td class="metric">GBP Calls</td><td class="num">193</td><td class="num">194</td><td class="num">191</td></tr>
+              <tr><td class="metric">GBP Chat / Text Inquiries</td><td class="num">10</td><td class="num">7</td><td class="num">7</td></tr>
+              <tr><td class="metric">Leads from GBP Listing (total)</td><td class="num">203</td><td class="num">201</td><td class="num">198</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="sec-intro" style="margin-top:14px;">
+        The source reports do not include Google Business Profile visibility metrics such as search views or map
+        views, so no statement can be made about whether GBP visibility increased or decreased. Only calls, chat/text
+        inquiries, and the resulting lead total are available.
+      </p>
+    </section>
+
+    <!-- 05 WEBSITE & SEARCH -->
+    <section class="rsec" id="website">
+      <div class="sec-head"><span class="sec-num">05</span><h2>Website &amp; Google Search Performance</h2></div>
+
+      <h3 class="section-sub">A. Website Lead Actions</h3>
+      <p class="sec-intro">Form submissions and click-to-call actions taken directly on the website.</p>
+      <div class="chart-panel">
+        <h4>Website Form Submissions vs. Click-to-Call</h4>
+        <svg id="chartWebsiteActions" width="100%" height="260" viewBox="0 0 700 260" role="img" aria-label="Form submissions and click to call by month"></svg>
+        <div class="legend">
+          <span class="li"><span class="sw" style="background:var(--accent-web)"></span>Form Submissions</span>
+          <span class="li"><span class="sw" style="background:repeating-linear-gradient(45deg, var(--accent-web) 0 3px, var(--surface) 3px 6px); border:1px solid var(--accent-web);"></span>Click-to-Call</span>
+        </div>
+        <p class="chart-cap">Month 2's exact reporting date range was not visible in the source screenshot; see Section 9.</p>
+      </div>
+
+      <h3 class="section-sub">B. Google Search Console</h3>
+      <div class="dq-box" style="margin-bottom:18px;">
+        <div class="dq-title">Reporting window notice</div>
+        <p class="dq-lead" style="margin-bottom:0;">
+          May and June Search Console data both cover a full calendar month (May 1&ndash;31 and June 1&ndash;30).
+          <strong>July's data covers July 7&ndash;August 3</strong>, a 28-day window that starts a week into July
+          and extends three days into August. It is not a calendar-month figure. May&rarr;June change is shown as a
+          normal comparison below. Any figure touching July is marked with an asterisk (*) and should be read as
+          directional only, not a clean month-over-month comparison.
+        </p>
+      </div>
+
+      <div class="chart-grid-2">
+        <div class="chart-panel">
+          <h4>Total Clicks</h4>
+          <svg id="chartGscClicks" width="100%" height="210" viewBox="0 0 520 210" role="img" aria-label="Search console clicks: 139 in May, 156 in June, 134 in the July 7 to August 3 window"></svg>
+          <p class="chart-cap warn">Dashed segment and hollow point = July's non-calendar-month window.</p>
+        </div>
+        <div class="chart-panel">
+          <h4>Total Impressions</h4>
+          <svg id="chartGscImpr" width="100%" height="210" viewBox="0 0 520 210" role="img" aria-label="Search console impressions: 81,300 in May, 65,700 in June, 62,700 in the July 7 to August 3 window"></svg>
+          <p class="chart-cap warn">Dashed segment and hollow point = July's non-calendar-month window.</p>
+        </div>
+      </div>
+
+      <div class="table-scroll" style="margin-top:16px;">
+        <table>
+          <thead><tr><th>Metric</th><th class="num">May (1&ndash;31)</th><th class="num">June (1&ndash;30)</th><th class="num">July (7&ndash;Aug 3)*</th><th class="num">May&rarr;June</th></tr></thead>
+          <tbody>
+            <tr><td class="metric">Total Clicks</td><td class="num">139</td><td class="num">156</td><td class="num">134*</td>
+              <td class="num"><span class="chip chip-up">&uarr; +17 (+12.2%)</span></td></tr>
+            <tr><td class="metric">Total Impressions</td><td class="num">81,300 <span style="color:var(--ink-faint)">(81.3K)</span></td><td class="num">65,700 <span style="color:var(--ink-faint)">(65.7K)</span></td><td class="num">62,700* <span style="color:var(--ink-faint)">(62.7K)</span></td>
+              <td class="num"><span class="chip chip-down">&darr; -15,600 (-19.2%)</span></td></tr>
+            <tr><td class="metric">Average CTR</td><td class="num">0.2%</td><td class="num">0.2%</td><td class="num">0.2%*</td>
+              <td class="num"><span class="chip chip-flat">&mdash; 0.0%</span></td></tr>
+            <tr><td class="metric">Average Position</td><td class="num">37.6</td><td class="num">41.2</td><td class="num">37.5*</td>
+              <td class="num"><span class="chip chip-down">&darr; +3.6 (worse, +9.6%)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="chart-cap" style="margin-top:8px;">
+        Impression figures shown as displayed by Google Search Console (81.3K, 65.7K, 62.7K), which Google's own
+        interface rounds to three significant figures.
+      </p>
+      <p class="sec-intro" style="margin-top:14px;">
+        <strong>Reading Average Position:</strong> this metric is a lower-is-better number. A smaller value means the
+        site's pages, on average, appeared higher in Google's results. It rose (got worse) from 37.6 to 41.2 between
+        May and June, a clean calendar-month comparison. It then fell (got better) to 37.5 in the July window, but
+        because that window is not a full calendar month, this later change is directional only. Average Position is
+        a site-wide average across all queries in Search Console; it is not the same as tracking specific keyword
+        rankings, which was not provided in these reports.
+      </p>
+    </section>
+
+    <!-- 06 KEY WINS -->
+    <section class="rsec" id="wins">
+      <div class="sec-head"><span class="sec-num">06</span><h2>Key Wins</h2></div>
+      <p class="sec-intro">Based strictly on the verified numbers above.</p>
+      <div class="item-grid">
+        <div class="item-card win">
+          <div class="item-head"><span class="item-title">Search Console Clicks, May&rarr;June</span><span class="chip chip-up">&uarr; +12.2%</span></div>
+          <div class="item-move">139 &rarr; 156</div>
+          <div class="item-detail">A clean, full calendar-month-to-calendar-month comparison.</div>
+        </div>
+        <div class="item-card win">
+          <div class="item-head"><span class="item-title">Website Form Submissions, May&rarr;July</span><span class="chip chip-up">&uarr; +7.7%</span></div>
+          <div class="item-move">26 &rarr; 28</div>
+          <div class="item-detail">Net gain across the quarter, even after a small June&rarr;July dip. The client's best-performing website lead channel over this period.</div>
+        </div>
+        <div class="item-card win">
+          <div class="item-head"><span class="item-title">GBP Calls Held Steady</span><span class="chip chip-flat">&mdash; -1.0% net</span></div>
+          <div class="item-move">193 &rarr; 194 &rarr; 191</div>
+          <div class="item-detail">The business's single largest lead source stayed essentially flat across all three months.</div>
+        </div>
+        <div class="item-card win">
+          <div class="item-head"><span class="item-title">GBP Chat/Text Held Steady, June&rarr;July</span><span class="chip chip-flat">&mdash; 0.0%</span></div>
+          <div class="item-move">7 &rarr; 7</div>
+          <div class="item-detail">No further decline after the earlier May&rarr;June drop.</div>
+        </div>
+        <div class="item-card win">
+          <div class="item-head"><span class="item-title">Average Position, June&rarr;July</span><span class="chip chip-up">&uarr; Improved</span></div>
+          <div class="item-move">41.2 &rarr; 37.5</div>
+          <div class="item-detail">About 9.0% better (lower is better for this metric).</div>
+          <div class="item-caveat">Caveat: July uses a different, non-calendar-month reporting window (July 7&ndash;Aug 3). Read as directional.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 AREAS FOR IMPROVEMENT -->
+    <section class="rsec" id="improve">
+      <div class="sec-head"><span class="sec-num">07</span><h2>Areas for Improvement</h2></div>
+      <p class="sec-intro">Based strictly on the verified numbers above, described in neutral terms.</p>
+      <div class="item-grid">
+        <div class="item-card improve">
+          <div class="item-head"><span class="item-title">Website Click-to-Call</span><span class="chip chip-down">&darr; -62.5%</span></div>
+          <div class="item-move">24 &rarr; 14 &rarr; 9</div>
+          <div class="item-detail">Declined in both month-pairs, the largest sustained decline in the dataset.</div>
+        </div>
+        <div class="item-card improve">
+          <div class="item-head"><span class="item-title">Website-Generated Leads</span><span class="chip chip-down">&darr; -26.0%</span></div>
+          <div class="item-move">50 &rarr; 43 &rarr; 37</div>
+          <div class="item-detail">Declined by roughly 14% in both May&rarr;June and June&rarr;July.</div>
+        </div>
+        <div class="item-card improve">
+          <div class="item-head"><span class="item-title">Search Impressions, May&rarr;June</span><span class="chip chip-down">&darr; -19.2%</span></div>
+          <div class="item-move">81,300 &rarr; 65,700</div>
+          <div class="item-detail">A clean calendar-month comparison showing fewer searches surfaced the listing.</div>
+        </div>
+        <div class="item-card improve">
+          <div class="item-head"><span class="item-title">GBP Chat/Text Inquiries, May&rarr;June</span><span class="chip chip-down">&darr; -30.0%</span></div>
+          <div class="item-move">10 &rarr; 7</div>
+          <div class="item-detail">Dropped in the first month-pair and did not recover in July.</div>
+        </div>
+        <div class="item-card improve">
+          <div class="item-head"><span class="item-title">Total Leads</span><span class="chip chip-down">&darr; -7.1%</span></div>
+          <div class="item-move">253 &rarr; 244 &rarr; 235</div>
+          <div class="item-detail">Declined in both month-pairs, a steady downward trend across the quarter.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 TRENDS -->
+    <section class="rsec" id="trends">
+      <div class="sec-head"><span class="sec-num">08</span><h2>Important Trends</h2></div>
+      <p class="sec-intro">Each item below separates the observed fact from LocalVisi Digital's reading of it.</p>
+
+      <div class="trend-block">
+        <h4>Overall lead trend</h4>
+        <p class="trend-fact"><span class="tag">Fact</span>Total leads fell every month, from 253 to 244 to 235, a 7.1% decline over the quarter.</p>
+        <p class="trend-read"><span class="tag2">Interpretation</span>This is a gradual, consistent slide rather than a single sharp drop.</p>
+      </div>
+
+      <div class="trend-block">
+        <h4>GBP vs. website lead trend</h4>
+        <p class="trend-fact"><span class="tag">Fact</span>GBP-attributed leads fell 2.5% over the quarter (203 to 198) while website-attributed leads fell 26.0% (50 to 37).</p>
+        <p class="trend-read"><span class="tag2">Interpretation</span>The decline is concentrated in the website channel, not evenly spread across both lead sources.</p>
+      </div>
+
+      <div class="trend-block">
+        <h4>Website call-action trend</h4>
+        <p class="trend-fact"><span class="tag">Fact</span>Website Click-to-Call fell every month (24, 14, 9) while Website Form Submissions were roughly flat to up (26, 29, 28).</p>
+        <p class="trend-read"><span class="tag2">Interpretation</span>The decline appears specific to the call action on the website rather than to website lead capture in general.</p>
+      </div>
+
+      <div class="trend-block">
+        <h4>Search visibility trend</h4>
+        <p class="trend-fact"><span class="tag">Fact</span>Search Console impressions fell 19.2% from May to June (81,300 to 65,700), a clean calendar-month comparison, while clicks rose 12.2% in that same period (139 to 156).</p>
+        <p class="trend-read"><span class="tag2">Interpretation</span>Fewer searches showed the listing at all in June, even though the click-through rate on those searches held up.</p>
+      </div>
+
+      <div class="trend-block">
+        <h4>Stability of GBP calls</h4>
+        <p class="trend-fact"><span class="tag">Fact</span>GBP Calls stayed within a narrow band across all three months: 193, 194, 191, a net change of only -1.0%.</p>
+        <p class="trend-read"><span class="tag2">Interpretation</span>Of all the lead channels tracked, GBP phone calls were the most stable this quarter.</p>
+      </div>
+    </section>
+
+    <!-- 09 DATA QUALITY -->
+    <section class="rsec" id="dataquality">
+      <div class="sec-head"><span class="sec-num">09</span><h2>Data Quality &amp; Reporting Notes</h2></div>
+      <div class="dq-box">
+        <div class="dq-title">Data Quality &amp; Reporting Notes</div>
+        <p class="dq-lead">These limitations affect what can and cannot be fairly compared in this report. None of them have been worked around or estimated.</p>
+        <ul class="dq-list">
+          <li><span class="idx">1</span>July's Google Search Console data covers July 7&ndash;August 3, not July 1&ndash;31. Any comparison touching July's clicks, impressions, CTR, or average position is directional only, not a calendar-month comparison.</li>
+          <li><span class="idx">2</span>Month 2's website interaction screenshot (form submissions/click-to-call) does not show a visible date range, so its exact reporting period is unconfirmed.</li>
+          <li><span class="idx">3</span>Website Click-to-Map is only available for May (1). It does not appear in the June or July reports and cannot be trended.</li>
+          <li><span class="idx">4</span>Keyword-level ranking data was not provided. Only Search Console's site-wide Average Position is available, which is not the same as tracking individual keyword ranks.</li>
+          <li><span class="idx">5</span>GA4 (Google Analytics) data was not provided in any of the three source reports.</li>
+          <li><span class="idx">6</span>Review count and star rating data were not provided. Only links to review-reply documentation were included in the source files.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 10 RECOMMENDED ACTIONS -->
+    <section class="rsec" id="actions">
+      <div class="sec-head"><span class="sec-num">10</span><h2>Recommended Actions</h2></div>
+      <p class="sec-intro">These are recommendations for investigation based on the observed patterns, not claims about the underlying cause. A cause has not been established from this data alone.</p>
+      <ul class="action-list">
+        <li><span class="anum">1</span><span class="atext"><strong>Investigate the decline in website Click-to-Call</strong> (24 &rarr; 14 &rarr; 9). This is the steepest trend in the report and warrants a direct look at the call button's placement and behavior.</span></li>
+        <li><span class="anum">2</span><span class="atext"><strong>Investigate why website-generated leads declined</strong> (50 &rarr; 37 over the quarter), separate from the GBP channel, which held up better.</span></li>
+        <li><span class="anum">3</span><span class="atext"><strong>Review website conversion elements and the mobile click-to-call experience</strong>, given that call actions fell faster than form submissions.</span></li>
+        <li><span class="anum">4</span><span class="atext"><strong>Investigate the May&rarr;June decline in Search Console impressions</strong> (81,300 &rarr; 65,700), a clean, fully comparable drop in search visibility.</span></li>
+        <li><span class="anum">5</span><span class="atext"><strong>Obtain keyword-level rank tracking</strong> for future reports, so ranking movement can be shown beyond the site-wide average position.</span></li>
+        <li><span class="anum">6</span><span class="atext"><strong>Add GA4 or other conversion data</strong> in future reporting, to connect website actions to on-site behavior and conversions.</span></li>
+        <li><span class="anum">7</span><span class="atext"><strong>Add GBP visibility metrics</strong> (profile views, search views, map views) in future reports, to distinguish visibility trends from lead-conversion trends.</span></li>
+      </ul>
+    </section>
+
+    <!-- 11 DATA SOURCES -->
+    <section class="rsec" id="sources">
+      <div class="sec-head"><span class="sec-num">11</span><h2>Data Sources</h2></div>
+      <p class="sec-intro">Every figure in this report traces back to a specific month, source file, and page, preserved from the verified extraction stage for auditability.</p>
+      <div class="table-scroll">
+        <table class="sources">
+          <thead><tr><th>Metric</th><th>Month</th><th>Source File</th><th class="num">Page</th></tr></thead>
+          <tbody id="sourcesBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap fline">
+    <span>LocalVisi Digital &middot; Local SEO &amp; Google Maps Visibility &middot; Confidential client report</span>
+    <span>JC's Auto Repair Shop &middot; May&ndash;July 2026 &middot; Prepared September 2026</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js" defer></script>
+<script>
+(function(){
+  "use strict";
+
+  function cssVar(name){
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+  function ns(tag, attrs){
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs){ el.setAttribute(k, attrs[k]); }
+    return el;
+  }
+  function fmt(n){ return n.toLocaleString("en-US"); }
+  function fmtK(n){ return (n/1000).toFixed(1) + "K"; }
+
+  var MONTHS = ["May","Jun","Jul"];
+
+  // ---------- sparklines in KPI cards ----------
+  document.querySelectorAll("svg.spark").forEach(function(svg){
+    var values = svg.dataset.spark.split(",").map(Number);
+    var colorKey = svg.dataset.color;
+    var colorVar = colorKey === "gbp" ? "--accent-gbp" : (colorKey === "web" ? "--accent-web" : "--total-line");
+    var color = cssVar(colorVar);
+    var W = 220, H = 46, pad = 6;
+    var min = Math.min.apply(null, values), max = Math.max.apply(null, values);
+    var span = (max - min) || 1;
+    var pts = values.map(function(v,i){
+      var x = pad + i * ((W - pad*2) / (values.length - 1));
+      var y = H - pad - ((v - min) / span) * (H - pad*2);
+      return [x,y];
+    });
+    var d = "M" + pts.map(function(p){return p[0]+","+p[1];}).join(" L ");
+    svg.appendChild(ns("path",{d:d, fill:"none", stroke:color, "stroke-width":2.5, "stroke-linecap":"round", "stroke-linejoin":"round"}));
+    pts.forEach(function(p, i){
+      var r = (i === pts.length-1) ? 3.6 : 2.6;
+      svg.appendChild(ns("circle",{cx:p[0], cy:p[1], r:r, fill: (i===pts.length-1)? color : cssVar("--surface"), stroke:color, "stroke-width":2}));
+    });
+  });
+
+  // ---------- generic line chart builder ----------
+  function lineChart(svg, opts){
+    // opts: {W,H,padL,padR,padT,padB, series:[{values,color,label,dashAfterIndex}], months, valueFmt, yDomain:[min,max], showAxis}
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var W = opts.W, H = opts.H;
+    var padL = opts.padL, padR = opts.padR, padT = opts.padT, padB = opts.padB;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var allVals = [].concat.apply([], opts.series.map(function(s){return s.values;}));
+    var yMin = opts.yDomain ? opts.yDomain[0] : Math.min.apply(null, allVals);
+    var yMax = opts.yDomain ? opts.yDomain[1] : Math.max.apply(null, allVals);
+    var ySpan = (yMax - yMin) || 1;
+    var n = opts.months.length;
+
+    function X(i){ return padL + i * (plotW / (n - 1)); }
+    function Y(v){ return padT + plotH - ((v - yMin) / ySpan) * plotH; }
+
+    // baseline
+    svg.appendChild(ns("line",{x1:padL, y1:padT+plotH, x2:padL+plotW, y2:padT+plotH, stroke:cssVar("--border"), "stroke-width":1}));
+
+    // month labels
+    opts.months.forEach(function(m,i){
+      var t = ns("text",{x:X(i), y:H-8, "text-anchor":"middle", "font-size":11.5, fill:cssVar("--ink-muted")});
+      t.textContent = m;
+      svg.appendChild(t);
+    });
+
+    opts.series.forEach(function(s){
+      var pts = s.values.map(function(v,i){ return [X(i), Y(v)]; });
+      for (var i=0; i<pts.length-1; i++){
+        var dashed = s.dashAfterIndex !== undefined && i >= s.dashAfterIndex;
+        var line = ns("line",{
+          x1:pts[i][0], y1:pts[i][1], x2:pts[i+1][0], y2:pts[i+1][1],
+          stroke:s.color, "stroke-width":2.75, "stroke-linecap":"round"
+        });
+        if (dashed) line.setAttribute("stroke-dasharray","2,6");
+        svg.appendChild(line);
+      }
+      pts.forEach(function(p, i){
+        var isCaveat = s.caveatIndex !== undefined && i >= s.caveatIndex;
+        var circle = ns("circle",{cx:p[0], cy:p[1], r:5, fill: isCaveat ? cssVar("--surface") : s.color, stroke:s.color, "stroke-width":2.5});
+        svg.appendChild(circle);
+        var titleEl = ns("title",{});
+        titleEl.textContent = opts.months[i] + ": " + (opts.valueFmt ? opts.valueFmt(s.values[i]) : s.values[i]);
+        circle.appendChild(titleEl);
+
+        var labelY = p[1] - 12;
+        if (opts.labelBelow && opts.labelBelow(s,i)) labelY = p[1] + 18;
+        var lbl = ns("text",{x:p[0], y: labelY, "text-anchor":"middle", "font-size":12.5, "font-weight":600, fill:s.textColor||cssVar("--ink")});
+        lbl.textContent = opts.valueFmt ? opts.valueFmt(s.values[i]) : s.values[i];
+        svg.appendChild(lbl);
+      });
+    });
+  }
+
+  // ---------- bar chart builder ----------
+  function barChart(svg, opts){
+    // opts: {W,H,padL,padR,padT,padB, months, groups:[{values,fill,hatch,label}], yMax, valueFmt}
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    if (opts.groups.some(function(g){ return g.hatch; })){
+      ensureHatchDef(svg);
+    }
+    var W = opts.W, H = opts.H;
+    var padL = opts.padL, padR = opts.padR, padT = opts.padT, padB = opts.padB;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var n = opts.months.length;
+    var groupCount = opts.groups.length;
+    var yMax = opts.yMax;
+
+    function Y(v){ return padT + plotH - (v/yMax)*plotH; }
+
+    svg.appendChild(ns("line",{x1:padL, y1:padT+plotH, x2:padL+plotW, y2:padT+plotH, stroke:cssVar("--border"), "stroke-width":1}));
+
+    var clusterW = plotW / n;
+    var barGap = 3;
+    var barW = groupCount === 1 ? Math.min(46, clusterW*0.42) : Math.min(30, (clusterW*0.62 - barGap)/groupCount);
+
+    for (var i=0; i<n; i++){
+      var clusterCenter = padL + clusterW*i + clusterW/2;
+      var totalBarsW = groupCount*barW + (groupCount-1)*barGap;
+      var startX = clusterCenter - totalBarsW/2;
+      for (var g=0; g<groupCount; g++){
+        var grp = opts.groups[g];
+        var v = grp.values[i];
+        var x = startX + g*(barW+barGap);
+        var yTop = Y(v);
+        var h = padT+plotH - yTop;
+        var rect = ns("rect",{x:x, y:yTop, width:barW, height:Math.max(h,1), rx:4, ry:4, fill: grp.hatch ? "url(#hatchWeb)" : grp.fill});
+        svg.appendChild(rect);
+        var titleEl = ns("title",{});
+        titleEl.textContent = grp.label + ", " + opts.months[i] + ": " + (opts.valueFmt?opts.valueFmt(v):v);
+        rect.appendChild(titleEl);
+        var lbl = ns("text",{x:x+barW/2, y:yTop-6, "text-anchor":"middle", "font-size":11.5, "font-weight":600, fill:cssVar("--ink")});
+        lbl.textContent = opts.valueFmt ? opts.valueFmt(v) : v;
+        svg.appendChild(lbl);
+      }
+      var mlabel = ns("text",{x:clusterCenter, y:H-8, "text-anchor":"middle", "font-size":11.5, fill:cssVar("--ink-muted")});
+      mlabel.textContent = opts.months[i];
+      svg.appendChild(mlabel);
+    }
+  }
+
+  function ensureHatchDef(svg){
+    var svgns = "http://www.w3.org/2000/svg";
+    var defs = ns("defs",{});
+    var pattern = ns("pattern",{id:"hatchWeb", width:6, height:6, patternUnits:"userSpaceOnUse", patternTransform:"rotate(45)"});
+    var rect = ns("rect",{width:6, height:6, fill:cssVar("--accent-web")});
+    var line = ns("line",{x1:0, y1:0, x2:0, y2:6, stroke:cssVar("--surface"), "stroke-width":2.4});
+    pattern.appendChild(rect); pattern.appendChild(line);
+    defs.appendChild(pattern);
+    svg.appendChild(defs);
+  }
+
+  function draw(){
+    var ink = cssVar("--ink");
+    var gbp = cssVar("--accent-gbp");
+    var web = cssVar("--accent-web");
+    var total = cssVar("--total-line");
+
+    // Chart: Total Leads trend
+    lineChart(document.getElementById("chartTotalLeads"), {
+      W:520, H:220, padL:34, padR:24, padT:34, padB:30,
+      months:MONTHS,
+      yDomain:[220,268],
+      series:[{values:[253,244,235], color: total, textColor: ink}],
+      valueFmt: function(v){ return fmt(v); }
+    });
+
+    // Chart: Indexed GBP vs Website
+    lineChart(document.getElementById("chartIndexed"), {
+      W:520, H:190, padL:30, padR:34, padT:22, padB:30,
+      months:MONTHS,
+      yDomain:[68,104],
+      series:[
+        {values:[100, 99.0, 97.5], color:gbp, textColor:gbp},
+        {values:[100, 86.0, 74.0], color:web, textColor:web}
+      ],
+      valueFmt: function(v){ return v.toFixed(1); }
+    });
+
+    // Chart: GBP Calls bar
+    var gbpSvg = document.getElementById("chartGbpCalls");
+    barChart(gbpSvg, {
+      W:480, H:230, padL:26, padR:26, padT:34, padB:32,
+      months:MONTHS, yMax:220,
+      groups:[{values:[193,194,191], fill:gbp, label:"GBP Calls"}],
+      valueFmt: function(v){ return v; }
+    });
+
+    // Chart: Website actions grouped bar (with hatch)
+    var waSvg = document.getElementById("chartWebsiteActions");
+    barChart(waSvg, {
+      W:700, H:260, padL:34, padR:34, padT:34, padB:34,
+      months:MONTHS, yMax:34,
+      groups:[
+        {values:[26,29,28], fill:web, label:"Form Submissions"},
+        {values:[24,14,9], fill:web, hatch:true, label:"Click-to-Call"}
+      ],
+      valueFmt: function(v){ return v; }
+    });
+
+    // Chart: GSC Clicks (with July caveat dash)
+    lineChart(document.getElementById("chartGscClicks"), {
+      W:520, H:210, padL:32, padR:28, padT:30, padB:30,
+      months:["May","Jun","Jul*"],
+      yDomain:[118,166],
+      series:[{values:[139,156,134], color:web, textColor:web, dashAfterIndex:1, caveatIndex:2}],
+      valueFmt: function(v){ return fmt(v); }
+    });
+
+    // Chart: GSC Impressions (with July caveat dash)
+    lineChart(document.getElementById("chartGscImpr"), {
+      W:520, H:210, padL:40, padR:28, padT:30, padB:30,
+      months:["May","Jun","Jul*"],
+      yDomain:[55000,88000],
+      series:[{values:[81300,65700,62700], color:web, textColor:web, dashAfterIndex:1, caveatIndex:2}],
+      valueFmt: function(v){ return fmtK(v); }
+    });
+  }
+
+  draw();
+  window.addEventListener("resize", function(){ /* viewBox scaling handles responsiveness; no redraw needed */ });
+
+  // Redraw on theme change so chart colors follow the token switch
+  if (window.matchMedia){
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
+  }
+
+  // ---------- Data Sources table ----------
+  var F1 = "Month 1  May 2026.pdf";
+  var F2 = "Month 2   June 2026.pdf";
+  var F3 = "Month 3 July 2026.pdf";
+  var rows = [
+    ["Total Leads","May 2026",F1,"2"],["Total Leads","June 2026",F2,"2"],["Total Leads","July 2026",F3,"2"],
+    ["Leads from GBP Listing","May 2026",F1,"2"],["Leads from GBP Listing","June 2026",F2,"2"],["Leads from GBP Listing","July 2026",F3,"2"],
+    ["Leads from Website","May 2026",F1,"2"],["Leads from Website","June 2026",F2,"2"],["Leads from Website","July 2026",F3,"2"],
+    ["GBP Calls","May 2026",F1,"4"],["GBP Calls","June 2026",F2,"4"],["GBP Calls","July 2026",F3,"4"],
+    ["GBP Chat / Text Inquiries","May 2026",F1,"4"],["GBP Chat / Text Inquiries","June 2026",F2,"4"],["GBP Chat / Text Inquiries","July 2026",F3,"4"],
+    ["Website Form Submissions","May 2026",F1,"7"],["Website Form Submissions","June 2026",F2,"7"],["Website Form Submissions","July 2026",F3,"7"],
+    ["Website Click-to-Call","May 2026",F1,"7"],["Website Click-to-Call","June 2026",F2,"7"],["Website Click-to-Call","July 2026",F3,"7"],
+    ["Website Click-to-Map","May 2026",F1,"7"],["Website Click-to-Map","June 2026","N/A — not shown",""],["Website Click-to-Map","July 2026","N/A — not shown",""],
+    ["GSC Total Clicks","May 2026",F1,"6"],["GSC Total Clicks","June 2026",F2,"6"],["GSC Total Clicks","July 2026",F3,"6"],
+    ["GSC Total Impressions","May 2026",F1,"6"],["GSC Total Impressions","June 2026",F2,"6"],["GSC Total Impressions","July 2026",F3,"6"],
+    ["GSC Average CTR","May 2026",F1,"6"],["GSC Average CTR","June 2026",F2,"6"],["GSC Average CTR","July 2026",F3,"6"],
+    ["GSC Average Position","May 2026",F1,"6"],["GSC Average Position","June 2026",F2,"6"],["GSC Average Position","July 2026",F3,"6"]
+  ];
+  var tbody = document.getElementById("sourcesBody");
+  var lastMetric = null;
+  rows.forEach(function(r){
+    var tr = document.createElement("tr");
+    var metricCell = (r[0] === lastMetric) ? "" : r[0];
+    lastMetric = r[0];
+    tr.innerHTML =
+      '<td class="metric">'+metricCell+'</td>' +
+      '<td>'+r[1]+'</td>' +
+      '<td class="src">'+r[2]+'</td>' +
+      '<td class="num">'+r[3]+'</td>';
+    tbody.appendChild(tr);
+  });
+})();
+</script>
